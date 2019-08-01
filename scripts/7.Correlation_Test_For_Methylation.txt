@@ -1,0 +1,95 @@
+####################################################################################################################################################################
+######################################################7. Correlation Test For Methylation#############################################################################
+####################################################################################################################################################################
+
+cat HiSeqV2_exon|grep -v "Sample"|cut -f 1|awk '{print $0,$0}'|sed 's/:/\t/'|sed 's/-/\t/'|sed 's/:/\t/'|grep "chr"|sed 's/chr//'|sort -k1n,1 -k2n,2 > pre_subtract_exons.bed
+
+#for extracting transcripts that have at least 2 unique transcripts
+R
+unqlen <- function(temp_F) {
+  length(unique(temp_F))
+}
+
+read.table(file="biomart_exons.bed",header=FALSE)->E
+aggregate(E$V5,list(E$V6),unqlen)->EU
+EU$Group.1[EU$x>1]->EUT
+E[E$V6 %in% EUT,]->ET
+write.table(file="new_exons.bed",ET,quote=FALSE,row.names=FALSE,col.names=FALSE,sep="\t")
+q()
+n
+
+#for obtaining those genes which have at least one exon which is getting differentially spliced between the 2 transcripts 
+for gene in `cut -f 6 new_exons.bed|sort -u`
+do
+count=1
+for trans in `grep "$gene" new_exons.bed|cut -f 5|sort -u`
+do
+echo $gene $trans
+grep "$trans" new_exons.bed > trans."$count".bed
+count=`echo $count|awk '{print $1+1}'`
+done
+tran1=`cat trans.1.bed|wc -l`
+tran2=`cat trans.2.bed|wc -l`
+if [ $tran1 -gt 1 ]
+then
+if [ $tran2 -gt 1 ]
+then
+bedtools subtract -A -a trans.1.bed -b trans.2.bed >> subtracted_regions.bed
+bedtools subtract -A -a trans.2.bed -b trans.1.bed >> subtracted_regions.bed
+fi
+fi
+done
+
+
+bedtools intersect -f 1 -F 1 -a pre_subtract_exons.bed -b subtracted_regions.bed -wa|sort -u > exons.bed
+
+for i in `ls -1 dIF_C.*`
+do
+nohup ./getCors.sh $i &
+done
+
+#for msigdb
+
+grep -v "Gene" diff_spliced_genes_msigdb.txt|awk '{print $4,$2,$3,$1}'|sed 's/ /\t/g'>diff_spliced_genes_msigdb.bed
+split -l 50 diff_spliced_genes_msigdb.bed dIF_msigdb.*
+for i in `ls -1 dIF_msigdb.*`
+do
+nohup ./getCors.sh $i &
+done  
+
+
+#getCors.sh script
+#for gene in `cat $1|sed 's/\t/_/g'`
+#do
+#echo $gene
+#echo $gene|sed 's/_/\t/g' > "$gene".bed
+#bedtools intersect -a "$gene".bed -b illuminaMethyl450_hg19_GPL16304_TCGAlegacy.bed -wb|cut -f 5-8|sort -k1n,1 -k2n,2 > probes_in_"$gene".bed
+#bedtools intersect -a "$gene".bed -b exons.bed -wb|cut -f 5-8|sort -k1n,1 -k2n,2 > exons_in_"$gene".bed
+#for pair in `bedtools closest -k 5 -d -a exons_in_"$gene".bed -b probes_in_"$gene".bed -wa -wb|awk '$10<1000{print $0}'|cut -f 4,8,9|sed 's/\t/_/g'|cut -f 2 -d ' '`
+#do
+#exonP=`echo $pair|cut -f 1 -d '_'`
+#methP=`echo $pair|cut -f 2 -d '_'`
+#head -1 HiSeqV2_exon > exon."$gene".temp
+#grep "$exonP" HiSeqV2_exon >> exon."$gene".temp
+#head -1 meth_BRCA_PANCAN.txt > temp."$gene".meth
+#grep "$methP" meth_BRCA_PANCAN.txt >> temp."$gene".meth
+#Rscript getCor.r $gene
+#rm temp."$gene".meth exon."$gene".temp
+#done
+#rm "$gene".bed exons_in_"$gene".bed probes_in_"$gene".bed 
+#mv "$gene".Cor_out.txt cors_folder
+#done
+
+#getCor.r script
+#!/usr/bin/env Rscript
+#args = commandArgs(trailingOnly=TRUE)
+#read.table(file=paste("exon.",args[1],".temp",sep=""),header=FALSE)->E
+#read.table(file=paste("temp.",args[1],".meth",sep=""),header=FALSE,fill=TRUE)->M
+#data.frame(t(E)[-1,])->tE
+#data.frame(t(M)[-1,])->tM
+#merge(tE,tM,by.x="X1",by.y="X1")->tEM
+##plot(as.numeric(as.character(tEM$X2.x)),as.numeric(as.character(tEM$X2.y)),xlab="Methylation",ylab="Expression",pch=16)
+#cor.test(as.numeric(as.character(tEM$X2.x)),as.numeric(as.character(tEM$X2.y)))->P
+#cor.test(as.numeric(as.character(tEM$X2.x)),as.numeric(as.character(tEM$X2.y)),method="kendall")->K
+#data.frame(P$estimate,P$p.value,K$estimate,K$p.value,t(E)[1,2],t(M)[1,2],args[1])->X
+#write.table(file=paste(args[1],".Cor_out.txt",sep=""),X,append=TRUE,col.names=FALSE,row.names=FALSE,sep="\t",quote=FALSE)
