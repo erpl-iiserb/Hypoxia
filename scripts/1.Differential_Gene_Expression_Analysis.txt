@@ -8,7 +8,14 @@ mkdir 1.Diff_gene_exp_analysis
 cd 1.Diff_gene_exp_analysis
 #For getting most representative probe sets for Affymetrix U133 Plus 2 using Jetset package
 
-#The file all_DRG.txt has been generated after TAC analysis and contains all differentially regulated genes in Microarray dataset GEO41491.
+#The file all_DRG.txt has been generated after TAC analysis and contains all differentially regulated genes in Microarray dataset GEO41491. Individual comparison results are provided as the following files:
+#NormVs12,16h_12.3.19_final.txt
+#NormVs1,2_FDR_9.3.19_final.txt
+#NormVs16,24_12.3.19_final.txt
+#NormVs2,4_9.3.19_FDR_final.txt
+#NormVs4,8_9.3.19_FDR_final.txt
+#NormVs8,12_9.3.19_FDR_final.txt
+
 
 #Removing duplicate rows from all_DRG.txt so that each diff. regulated gene appear once in the list
 R
