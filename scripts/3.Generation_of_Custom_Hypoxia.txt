@@ -1,0 +1,28 @@
+###################################################################################################################################################################
+#########################################################3. Generation of Custom Hypoxia Signature###################################################################
+###################################################################################################################################################################
+#heatmap 
+#For merging of custom list to expression at each timepoint
+
+mkdir 3.Generation_of_custom_hyp_signature
+cd 3.Generation_of_custom_hyp_signature
+cp /home/erpl/Project/2.Chip-seq_peak_calling/Fig2a/custom_sig_before_cleanup3Jun.txt ../3.Generation_of_custom_hyp_signature
+R
+a=read.table(file="exp_each_timepoint",header=T,sep="\t")
+b=read.table(file="custom_sig_before_cleanup3Jun.txt",header=F,sep="\t")
+c=merge(a,b,by.x="sample",by.y="V1")
+write.table(c,file="custom_m_exp_each_timepoint_3Jun",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+#merging msigdb list with expression level at each timepoint
+#msigdb signature was downloaded from http://software.broadinstitute.org/gsea/msigdb/cards/HALLMARK_HYPOXIA.html
+sed 's/AK3L1/AK4/' msigdb_signature.txt>msigdb_signature_alt_name.txt
+R
+a=read.table(file="exp_each_timepoint",header=T,sep="\t")
+b=read.table(file="msigdb_signature_alt_name.txt",header=F,sep="\t")
+c=merge(a,b,by.x="sample",by.y="V1")
+write.table(c,file="exp_each_timepoint_m_msigdb",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+
+#Heatmap was made with online tool Morpheus
