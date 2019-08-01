@@ -1,0 +1,94 @@
+######################################################################################################################################################################
+############################################6. Differential Exon Expression Analysis####################################################################################
+######################################################################################################################################################################
+
+
+#For calculating Isoform Fractions
+
+#Splitting the custom clusters into 5 parts
+split -l 25 normoxia_cluster_custom10 NormC_custom.
+split -l 25 hypoxia_cluster_custom10 HypC_custom.
+
+#Creating abundance.tsv for every breast cancer tumor sample
+for i in `cat HypC_custom.aa`
+do
+echo $i
+est=`cat datafile | tr "\t" "\n"|awk -v tar=$i '$1==tar{print NR}'`
+cut -f $est tcga_Kallisto_est_counts > temp."$i".counts
+cut -f $est tcga_Kallisto_tpm > temp."$i".tpm
+paste trans.list temp."$i".counts temp."$i".tpm > temp."$i".kall
+mkdir -p estimates/"$2"_"$i"
+Rscript WriteKalAb.r temp."$i".kall "$2"_"$i"
+rm temp."$i".counts temp."$i".tpm temp."$i".kall
+done
+
+#WriteKalAb.r Rscipt
+#args = commandArgs(trailingOnly=TRUE)
+#read.table(file="kall_format",header=FALSE)->E
+#read.table(file=args[1],header=TRUE,as.is=TRUE)->M
+#merge(E,M,by.y="sample",by.x="V1")->MEI
+#data.frame(target_id=MEI$V1,length=MEI$V2,eff_length=MEI$V3,est_counts=(2^MEI[,4])-1,tpm=(2^MEI[,5])-0.001)->X
+#X$tpm[X$tpm<0]<-rep(0,length(X$tpm[X$tpm<0]))
+#write.table(file=paste("estimates/",args[2],"/abundance.tsv",sep=""),X,row.names=FALSE,col.names=TRUE,quote=FALSE,sep="\t")
+
+
+#Same was repeated for all other split clusters
+
+#Calculating Isoform Fraction for every transcript
+for j in `ls -1 estimates/|cut -f 2 -d '/'`
+do
+sed 's/\./\t/' estimates/"$j"/abundance.tsv|grep -v "target_id" > "$j"_abund
+Rscript getIF.r "$j"_abund
+done
+
+#getIF.r Rscript 
+args = commandArgs(trailingOnly=TRUE)
+read.table(file="ensembl_ID.txt",header=TRUE,as.is=TRUE)->M
+read.table(file=args[1],header=FALSE,as.is=TRUE,fill=TRUE)->E
+merge(M,E,by.x="Transcript_stable_ID",by.y="V1")->ME
+as.data.frame(aggregate(ME$V5,list(ME$Gene_stable_ID),sum))->N
+merge(ME,N,by.x="Gene_stable_ID",by.y="Group.1")->MEN
+MEN$V5/MEN$x->MEN$IF
+data.frame(T=MEN$Transcript_stable_ID,IF=MEN$IF)->X
+write.table(file=paste(args[1],".IF",sep=""),X,row.names=FALSE,col.names=FALSE,sep="\t",quote=FALSE)
+
+paste HypC_*_abund.IF|cut -f 1,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,126,128,130,132,134,136,138,140,142,144,146,148,150,152,154,156,158,160,162,164,166,168,170,172,174,176,178,180,182,184,186,188,190,192,194,196,198,200,202,204,206,208,210,212,214,216,218,220 > IF_HypC
+paste NormC_*_abund.IF|cut -f 1,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98,100,102,104,106,108,110,112,114,116,118,120,122,124,126,128,130,132,134,136,138,140,142,144,146,148,150,152,154,156,158,160,162,164,166,168,170,172,174,176,178,180,182,184,186,188,190,192,194,196,198,200,202,204,206,208,210,212,214,216,218,220 > IF_NormC
+
+#Getting mean of isoform fraction and difference in isoform fraction dIF
+read.table(file="IF_HypC",header=FALSE)->H
+apply(H[,2:111], 1, mean)->HX
+read.table(file="IF_NormC",header=FALSE)->N
+apply(N[,2:111], 1, mean)->NX
+HX-NX->DIF
+na.omit(data.frame(Trans=H$V1,DIF=DIF))->Q
+#as.numeric(abs(quantile(Q$DIF,0.01,na.rm=TRUE)))
+#take the FDR<0.01 cut-off
+unique(na.omit(Q$Trans[abs(Q$DIF)>as.numeric(abs(quantile(Q$DIF,0.01,na.rm=TRUE)))]))->UTrans
+read.table(file="ensembl_ID.txt",header=TRUE,as.is=TRUE)->E
+data.frame(table(E$Gene_stable_ID[E$Transcript_stable_ID %in% UTrans]))->G2
+G2[G2$Freq>1,]->G3
+write.table(file="dIF_C_genes_list.txt",G3$Var1,quote=FALSE,sep="\t",col.names=FALSE,row.names=FALSE)
+
+#creating file with gene_ID, transcript_ID and dIF
+
+Q[as.character(Q$Trans) %in% as.character(UTrans),]->Q2
+merge(Q2,E,by.x="Trans",by.y="Transcript_stable_ID")->Q2E
+Q2E[Q2E$Gene_stable_ID %in% G3$Var1,]->Q3
+write.table(file="dIF_C_genes_list_IF.txt",Q3,quote=FALSE,sep="\t",col.names=FALSE,row.names=FALSE)
+
+#all the above steps were repeated for msigdb set
+
+#for plotting boxplot for candidate genes
+I1<-"ENST00000260947"
+I2<-"ENST00000619009"
+
+H[H$V1==I1,]->HI1
+H[H$V1==I2,]->HI2
+
+N[N$V1==I1,]->NI1
+N[N$V1==I2,]->NI2
+
+data.frame(Factor=c(rep("B_HI1",length(HI1)-1),rep("D_HI2",length(HI2)-1),rep("A_NI1",length(NI1)-1),rep("C_NI2",length(NI2)-1)),Expr=c(as.numeric(HI1[1,2:111]),as.numeric(HI2[1,2:111]),as.numeric(NI1[1,2:111]),as.numeric(NI2[1,2:111])))->B
+
+boxplot(B$Expr~B$Factor,noth=TRUE,col=c("red","blue","red","blue"),ylab="Percent Isoform Usage",names=c("Normoxia","Hypoxia","Normoxia","Hypoxia"))
