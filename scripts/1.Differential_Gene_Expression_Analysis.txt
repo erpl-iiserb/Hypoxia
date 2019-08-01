@@ -1,0 +1,48 @@
+###################################################################################################################################################################
+########################################################1.Differential Gene Expression Analysis######################################################################
+###################################################################################################################################################################
+mkdir Project
+cd Project
+
+mkdir 1.Diff_gene_exp_analysis
+cd 1.Diff_gene_exp_analysis
+#For getting most representative probe sets for Affymetrix U133 Plus 2 using Jetset package
+
+#The file all_DRG.txt has been generated after TAC analysis and contains all differentially regulated genes in Microarray dataset GEO41491.
+
+#Removing duplicate rows from all_DRG.txt so that each diff. regulated gene appear once in the list
+R
+a=read.table(file="all_DRG.txt",header=T,sep="\t",quote="")
+library(dplyr)
+b=a%>%distinct(Gene.Symbol,.keep_all=T)
+write.table(b,file="all_DRG_unique",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+grep -v "Normoxia" all_DRG_unique |cut -f 7>all_DRG_gene_symbols
+R
+a=read.table(file="all_DRG_gene_symbols",header=F,as.is=TRUE)
+library(jetset)
+b=jmap('hgu133plus2',symbol=a$V1)
+write.table(b,file="probeID_best",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+R
+a=read.table(file="probeID_best",header=T,sep="\t")
+b=a%>%distinct(x,.keep_all=T)
+write.table(b,file="probeID_best_uniq",sep="\t",row.names=F,quote=F)
+q()
+n
+R
+a=read.table(file="all_DRG.txt",sep="\t",header=T,quote="")
+b=read.table(file="probeID_best_uniq",header=F,sep="\t")
+c=merge(a,b,by.x="ID",by.y="V1")
+d=c%>%distinct(ID,.keep_all=T)
+write.table(d,file="all_DRG_m_probe_best_unique",sep="\t",row.names=F,quote=F)
+q()
+n
+sed -i 's/ /_/g' all_DRG_m_probe_best_unique
+
+#For getting the list of upregulated genes out of all differentially regulated genes
+awk '$4<0{print $0}' all_DRG_m_probe_best_unique|sed 's/ /\t/g'> Upregulated_genes
+
+cd ..
