@@ -1,0 +1,17 @@
+###################################################################################################################################################################
+######################################################4.Collection of TCGA data ##############################################################################
+###################################################################################################################################################################
+
+mkdir 4.Collection_of_TCGA_data
+cd 4.Collection_of_TCGA_data
+#exon expression data from PANCAN
+wget https://tcga.xenahubs.net/download/TCGA.PANCAN.sampleMap/HiSeqV2_exon.gz
+#Transcipt expression level estimated using kallisto
+wget https://toil.xenahubs.net/download/tcga_Kallisto_est_counts.gz
+#Gene expression level in FPKM estimated using RSEM
+wget https://toil.xenahubs.net/download/tcga_RSEM_gene_fpkm.gz
+#Methylation data from 450K array
+wget https://pancanatlas.xenahubs.net/download/jhu-usc.edu_PANCAN_HumanMethylation450.betaValue_whitelisted.tsv.synapse_download_5096262.xena.gz
+#Survival data
+wget https://pancanatlas.xenahubs.net/download/Survival_SupplementalTable_S1_20171025_xena_sp.gz
+cd ..
