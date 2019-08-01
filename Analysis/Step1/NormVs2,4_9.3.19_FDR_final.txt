@@ -1,0 +1,69 @@
+ID	Normoxia Avg (log2)	Hypoxia Avg (log2)	Fold Change	P-val	FDR P-val	Gene Symbol	Description
+227337_at	5.7	9.94	-18.81	2.34E-07	0.0128	ANKRD37	ankyrin repeat domain 37
+201170_s_at	9.16	12.25	-8.49	1.18E-06	0.0218	BHLHE40	basic helix-loop-helix family, member e40
+202887_s_at	10.36	13.32	-7.77	1.48E-06	0.0218	DDIT4	DNA damage inducible transcript 4
+209189_at	7.81	11.18	-10.31	1.59E-06	0.0218	FOS	FBJ murine osteosarcoma viral oncogene homolog
+202912_at	8.51	12.57	-16.64	2.91E-06	0.0318	ADM	adrenomedullin
+201694_s_at	9.91	11.71	-3.49	2.06E-05	0.0378	EGR1	early growth response 1
+201739_at	8.95	6.72	4.69	6.69E-06	0.0378	SGK1	serum/glucocorticoid regulated kinase 1
+202464_s_at	9.27	11.61	-5.04	6.81E-06	0.0378	PFKFB3	6-phosphofructo-2-kinase/fructose-2,6-biphosphatase 3
+202549_at	8.02	6.36	3.16	2.97E-05	0.0378	VAPB	VAMP (vesicle-associated membrane protein)-associated protein B and C
+202770_s_at	8.26	10.61	-5.08	3.11E-05	0.0378	CCNG2	cyclin G2
+202842_s_at	10.08	12.87	-6.93	1.50E-05	0.0378	DNAJB9	DnaJ (Hsp40) homolog, subfamily B, member 9
+202843_at	6.62	10.39	-13.66	4.34E-06	0.0378	DNAJB9	DnaJ (Hsp40) homolog, subfamily B, member 9
+204284_at	8.89	11.15	-4.78	3.17E-05	0.0378	PPP1R3C	protein phosphatase 1, regulatory subunit 3C
+206500_s_at	7.08	5.12	3.89	1.56E-05	0.0378	MIS18BP1	MIS18 binding protein 1
+207980_s_at	6.46	8.3	-3.58	1.99E-05	0.0378	CITED2	Cbp/p300-interacting transactivator, with Glu/Asp rich carboxy-terminal domain, 2
+208859_s_at	8.46	6.28	4.54	9.46E-06	0.0378	ATRX	alpha thalassemia/mental retardation syndrome X-linked
+208900_s_at	11.37	9.2	4.49	1.53E-05	0.0378	TOP1	topoisomerase (DNA) I
+209136_s_at	9.11	7.46	3.15	3.21E-05	0.0378	USP10	ubiquitin specific peptidase 10
+209203_s_at	8	5.94	4.16	2.12E-05	0.0378	BICD2	bicaudal D homolog 2 (Drosophila)
+209257_s_at	8.84	7.01	3.57	1.90E-05	0.0378	SMC3	structural maintenance of chromosomes 3
+209357_at	8.52	10.75	-4.71	9.48E-06	0.0378	CITED2	Cbp/p300-interacting transactivator, with Glu/Asp rich carboxy-terminal domain, 2
+209457_at	6.29	8.46	-4.51	1.01E-05	0.0378	DUSP5	dual specificity phosphatase 5
+211993_at	8.52	6.85	3.18	3.13E-05	0.0378	WNK1	WNK lysine deficient protein kinase 1
+212105_s_at	6.67	4.87	3.49	2.70E-05	0.0378	DHX9	DEAH (Asp-Glu-Ala-His) box helicase 9
+212107_s_at	9.14	7.18	3.89	1.37E-05	0.0378	DHX9	DEAH (Asp-Glu-Ala-His) box helicase 9
+212558_at	7.04	9.39	-5.08	1.49E-05	0.0378	SPRY1	sprouty RTK signaling antagonist 1
+213286_at	8.07	6.37	3.25	2.70E-05	0.0378	ZFR	zinc finger RNA binding protein
+213446_s_at	10.4	8.39	4.03	1.70E-05	0.0378	IQGAP1	IQ motif containing GTPase activating protein 1
+215220_s_at	5.94	3.96	3.95	1.29E-05	0.0378	TPR	translocated promoter region, nuclear basket protein
+36711_at	7.9	10.65	-6.75	1.14E-05	0.0378	MAFF	v-maf avian musculoaponeurotic fibrosarcoma oncogene homolog F
+223940_x_at	10.24	7.98	4.78	2.65E-05	0.0378	MALAT1	metastasis associated lung adenocarcinoma transcript 1 (non-protein coding)
+224567_x_at	11.7	9.59	4.31	1.68E-05	0.0378	MALAT1	metastasis associated lung adenocarcinoma transcript 1 (non-protein coding)
+224730_at	9.37	7.66	3.27	3.27E-05	0.0378	DCAF7	DDB1 and CUL4 associated factor 7
+224797_at	7.1	9.24	-4.41	3.35E-05	0.0378	ARRDC3	arrestin domain containing 3
+226675_s_at	10.22	7.63	6.05	2.01E-05	0.0378	MALAT1	metastasis associated lung adenocarcinoma transcript 1 (non-protein coding)
+227285_at	7.24	10.31	-8.37	5.59E-06	0.0378	CIART	circadian associated repressor of transcription
+227404_s_at	11.27	13.2	-3.83	2.63E-05	0.0378	EGR1	early growth response 1
+230629_s_at	7.58	5.7	3.69	2.96E-05	0.0378	EP400	E1A binding protein p400
+231875_at	8.76	7.03	3.32	2.51E-05	0.0378	KIF21A	kinesin family member 21A
+235461_at	7.01	4.99	4.08	2.66E-05	0.0378	TET2	tet methylcytosine dioxygenase 2
+236207_at	7.43	4.97	5.52	2.66E-05	0.0378	SSFA2	sperm specific antigen 2
+236620_at	8.65	6.91	3.35	2.31E-05	0.0378	RIF1	replication timing regulatory factor 1
+242918_at	6.55	4.53	4.06	1.20E-05	0.0378	NASP	nuclear autoantigenic sperm protein (histone-binding)
+243648_at	8.29	6.22	4.21	1.15E-05	0.0378	ZBED6	zinc finger, BED-type containing 6
+1554452_a_at	9.01	11.82	-7.02	3.39E-05	0.0378	HILPDA	hypoxia inducible lipid droplet-associated
+1554462_a_at	8.07	11.42	-10.19	1.89E-05	0.0378	DNAJB9	DnaJ (Hsp40) homolog, subfamily B, member 9
+1557227_s_at	6.42	4.68	3.33	2.51E-05	0.0378	TPR	translocated promoter region, nuclear basket protein
+1558028_x_at	8.12	6.27	3.62	2.36E-05	0.0378	LINC00657	long intergenic non-protein coding RNA 657
+1558678_s_at	12.71	10.49	4.68	2.86E-05	0.0378	MALAT1	metastasis associated lung adenocarcinoma transcript 1 (non-protein coding)
+214464_at	9.01	7.28	3.34	3.46E-05	0.0378	CDC42BPA	CDC42 binding protein kinase alpha (DMPK-like)
+233827_s_at	10.31	8.31	4	3.70E-05	0.0396	SUPT16H	SPT16 homolog, facilitates chromatin remodeling subunit
+224657_at	10.34	12.78	-5.44	3.79E-05	0.0398	ERRFI1	ERBB receptor feedback inhibitor 1
+1557129_a_at	5.95	4.03	3.79	3.92E-05	0.0404	FAM111B	family with sequence similarity 111, member B
+202769_at	10.61	12.63	-4.05	4.41E-05	0.0446	CCNG2	cyclin G2
+216222_s_at	6.98	5.46	2.87	4.83E-05	0.0466	MYO10	myosin X
+221530_s_at	5.5	7.07	-2.98	4.86E-05	0.0466	BHLHE41	basic helix-loop-helix family, member e41
+239451_at	6.04	8.06	-4.05	4.73E-05	0.0466		
+1553106_at	6.24	4.63	3.06	4.97E-05	0.0468	C5orf24	chromosome 5 open reading frame 24
+201464_x_at	8.99	10.53	-2.92	5.28E-05	0.0472	JUN	jun proto-oncogene
+207574_s_at	9.4	11.03	-3.1	5.44E-05	0.0472	GADD45B	growth arrest and DNA-damage-inducible, beta
+212979_s_at	8.78	7.26	2.86	5.51E-05	0.0472	TCAF1	TRPM8 channel-associated factor 1
+213926_s_at	7.85	5.95	3.73	5.52E-05	0.0472	AGFG1	ArfGAP with FG repeats 1
+215092_s_at	7.01	5.54	2.77	5.54E-05	0.0472	NFAT5	nuclear factor of activated T-cells 5, tonicity-responsive
+236429_at	6.6	4.9	3.26	5.24E-05	0.0472		
+202638_s_at	5.86	7.45	-3	5.77E-05	0.0481	ICAM1	intercellular adhesion molecule 1
+242408_at	8.96	7.09	3.65	5.82E-05	0.0481	STYX	serine/threonine/tyrosine interacting protein
+210512_s_at	9.16	11.45	-4.89	5.97E-05	0.0483	VEGFA	vascular endothelial growth factor A
+212220_at	6.61	5.16	2.73	6.02E-05	0.0483	PSME4	proteasome activator subunit 4

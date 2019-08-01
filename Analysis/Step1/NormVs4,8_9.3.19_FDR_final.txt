@@ -1,0 +1,115 @@
+ID	Normoxia Avg (log2)	Hypoxia Avg (log2)	Fold Change	P-val	FDR P-val	Gene Symbol	Description
+202843_at	6.62	10.76	-17.66	3.30E-06	0.0243	DNAJB9	DnaJ (Hsp40) homolog, subfamily B, member 9
+202912_at	8.51	12.88	-20.74	1.34E-06	0.0243	ADM	adrenomedullin
+209189_at	7.81	11.04	-9.36	3.40E-06	0.0243	FOS	FBJ murine osteosarcoma viral oncogene homolog
+226348_at	7.95	11.36	-10.59	2.38E-06	0.0243	FUT11	fucosyltransferase 11 (alpha (1,3) fucosyltransferase)
+227285_at	7.24	10.42	-9.05	3.55E-06	0.0243	CIART	circadian associated repressor of transcription
+227337_at	5.7	9.99	-19.56	9.88E-07	0.0243	ANKRD37	ankyrin repeat domain 37
+228499_at	7.59	11.27	-12.83	1.60E-06	0.0243	PFKFB4	6-phosphofructo-2-kinase/fructose-2,6-biphosphatase 4
+1554462_a_at	8.07	11.74	-12.77	2.02E-06	0.0243	DNAJB9	DnaJ (Hsp40) homolog, subfamily B, member 9
+201170_s_at	9.16	12.14	-7.86	9.44E-06	0.0303	BHLHE40	basic helix-loop-helix family, member e40
+202770_s_at	8.26	10.78	-5.75	1.08E-05	0.0303	CCNG2	cyclin G2
+202842_s_at	10.08	13.13	-8.3	5.85E-06	0.0303	DNAJB9	DnaJ (Hsp40) homolog, subfamily B, member 9
+209258_s_at	8.57	5.76	7.02	6.39E-06	0.0303	SMC3	structural maintenance of chromosomes 3
+210512_s_at	9.16	11.69	-5.77	1.15E-05	0.0303	VEGFA	vascular endothelial growth factor A
+212689_s_at	9.03	11.78	-6.75	7.44E-06	0.0303	KDM3A	lysine (K)-specific demethylase 3A
+217168_s_at	9.08	12.11	-8.19	6.81E-06	0.0303	HERPUD1	homocysteine-inducible, endoplasmic reticulum stress-inducible, ubiquitin-like domain member 1
+218507_at	10.93	13.53	-6.09	1.17E-05	0.0303	HILPDA	hypoxia inducible lipid droplet-associated
+221009_s_at	7.48	10.02	-5.8	1.06E-05	0.0303	ANGPTL4	angiopoietin like 4
+224657_at	10.34	12.96	-6.14	9.09E-06	0.0303	ERRFI1	ERBB receptor feedback inhibitor 1
+226347_at	7.86	11.11	-9.51	7.81E-06	0.0303		
+226863_at	8.37	11.16	-6.91	8.97E-06	0.0303	FAM110C	family with sequence similarity 110, member C
+238551_at	6.66	9.87	-9.24	1.13E-05	0.0303	FUT11	fucosyltransferase 11 (alpha (1,3) fucosyltransferase)
+201340_s_at	8.21	5.88	5	1.65E-05	0.0306	ENC1	ectodermal-neural cortex 1 (with BTB domain)
+202934_at	9.21	12.19	-7.89	1.48E-05	0.0306	HK2	hexokinase 2
+202936_s_at	7.27	9.91	-6.22	1.40E-05	0.0306	SOX9	SRY box 9
+202973_x_at	4.61	9.47	-29.03	1.42E-05	0.0306	FAM13A	family with sequence similarity 13, member A
+211559_s_at	6.9	9.43	-5.76	1.33E-05	0.0306	CCNG2	cyclin G2
+218839_at	6.08	9.25	-8.96	1.62E-05	0.0306	HEY1	hes-related family bHLH transcription factor with YRPW motif 1
+230710_at	6.11	8.77	-6.32	1.71E-05	0.0306	MIR210HG	MIR210 host gene
+235419_at	6.59	9.15	-5.89	1.26E-05	0.0306		
+235857_at	7.66	10.22	-5.9	1.63E-05	0.0306	KCTD11	potassium channel tetramerization domain containing 11
+239431_at	5.69	7.99	-4.92	1.74E-05	0.0306	TICAM2; TMED7-TICAM2	toll-like receptor adaptor molecule 2; TMED7-TICAM2 readthrough
+208900_s_at	11.37	9.12	4.77	1.93E-05	0.0310	TOP1	topoisomerase (DNA) I
+224797_at	7.1	9.44	-5.07	1.92E-05	0.0310	ARRDC3	arrestin domain containing 3
+230728_at	6.32	8.58	-4.81	1.93E-05	0.0310	FKBP14	FK506 binding protein 14
+201739_at	8.95	6.62	5.02	2.34E-05	0.0312	SGK1	serum/glucocorticoid regulated kinase 1
+202464_s_at	9.27	11.6	-5.02	2.11E-05	0.0312	PFKFB3	6-phosphofructo-2-kinase/fructose-2,6-biphosphatase 3
+202769_at	10.61	12.8	-4.54	2.34E-05	0.0312	CCNG2	cyclin G2
+202887_s_at	10.36	13.16	-6.98	2.33E-05	0.0312	DDIT4	DNA damage inducible transcript 4
+202935_s_at	6.17	8.71	-5.81	2.02E-05	0.0312	SOX9	SRY box 9
+206307_s_at	7.59	9.85	-4.8	2.31E-05	0.0312	FOXD1	forkhead box D1
+219232_s_at	7.51	10.48	-7.83	2.23E-05	0.0312	EGLN3	egl-9 family hypoxia-inducible factor 3
+209357_at	8.52	10.92	-5.3	2.49E-05	0.0324	CITED2	Cbp/p300-interacting transactivator, with Glu/Asp rich carboxy-terminal domain, 2
+217047_s_at	5.15	9.07	-15.17	2.61E-05	0.0325	FAM13A	family with sequence similarity 13, member A
+1554452_a_at	9.01	12.3	-9.78	2.62E-05	0.0325	HILPDA	hypoxia inducible lipid droplet-associated
+209203_s_at	8	5.77	4.68	2.75E-05	0.0334	BICD2	bicaudal D homolog 2 (Drosophila)
+209566_at	6.99	10.42	-10.83	2.93E-05	0.0340	INSIG2	insulin induced gene 2
+235965_at	5.61	9.17	-11.81	2.93E-05	0.0340	BHLHA15	basic helix-loop-helix family, member a15
+200632_s_at	8.85	13.22	-20.66	3.09E-05	0.0346	NDRG1	N-myc downstream regulated 1
+201250_s_at	8.88	11.19	-4.94	3.10E-05	0.0346	SLC2A1	solute carrier family 2 (facilitated glucose transporter), member 1
+44783_s_at	7.9	10.96	-8.33	3.32E-05	0.0363	HEY1	hes-related family bHLH transcription factor with YRPW motif 1
+1557129_a_at	5.95	3.85	4.28	3.43E-05	0.0368	FAM111B	family with sequence similarity 111, member B
+218274_s_at	7.85	9.86	-4.01	3.51E-05	0.0368	ANKZF1	ankyrin repeat and zinc finger domain containing 1
+218559_s_at	7.78	5.5	4.85	3.57E-05	0.0368	MAFB	v-maf avian musculoaponeurotic fibrosarcoma oncogene homolog B
+212558_at	7.04	9.38	-5.05	3.80E-05	0.0369	SPRY1	sprouty RTK signaling antagonist 1
+214978_s_at	5.18	8.22	-8.17	3.88E-05	0.0369	PPFIA4	protein tyrosine phosphatase, receptor type, f polypeptide (PTPRF), interacting protein (liprin), alpha 4
+223333_s_at	6.78	8.75	-3.93	3.92E-05	0.0369	ANGPTL4	angiopoietin like 4
+233827_s_at	10.31	8.08	4.7	3.75E-05	0.0369	SUPT16H	SPT16 homolog, facilitates chromatin remodeling subunit
+243648_at	8.29	6.23	4.17	3.68E-05	0.0369	ZBED6	zinc finger, BED-type containing 6
+206424_at	6.53	8.58	-4.16	4.08E-05	0.0374	CYP26A1	cytochrome P450, family 26, subfamily A, polypeptide 1
+215220_s_at	5.94	3.93	4.02	4.17E-05	0.0374	TPR	translocated promoter region, nuclear basket protein
+242828_at	7.96	5.98	3.93	4.18E-05	0.0374	FIGN	fidgetin
+219390_at	6.36	9.18	-7.1	4.26E-05	0.0375	FKBP14	FK506 binding protein 14
+215209_at	4.17	6.2	-4.08	4.34E-05	0.0376	SEC24D	SEC24 homolog D, COPII coat complex component
+218696_at	9.06	11.01	-3.85	4.54E-05	0.0387	EIF2AK3	eukaryotic translation initiation factor 2-alpha kinase 3
+242918_at	6.55	4.48	4.22	4.65E-05	0.0391	NASP	nuclear autoantigenic sperm protein (histone-binding)
+208930_s_at	9.8	7.91	3.69	4.83E-05	0.0393	ILF3	interleukin enhancer binding factor 3
+235153_at	6.57	9.96	-10.51	4.78E-05	0.0393	RNF183	ring finger protein 183
+1565867_a_at	7.07	4.91	4.49	5.01E-05	0.0402	LOC441155; ZC3H11A	zinc finger CCCH-type domain-containing-like; zinc finger CCCH-type containing 11A
+227404_s_at	11.27	13.17	-3.75	5.59E-05	0.0430	EGR1	early growth response 1
+228234_at	7.32	10.01	-6.42	5.54E-05	0.0430	TICAM2; TMED7-TICAM2	toll-like receptor adaptor molecule 2; TMED7-TICAM2 readthrough
+242669_at	6.78	9.03	-4.76	5.50E-05	0.0430	UFM1	ubiquitin-fold modifier 1
+219158_s_at	9.98	8.04	3.83	5.78E-05	0.0439	NAA15	N(alpha)-acetyltransferase 15, NatA auxiliary subunit
+225750_at	9.7	12.62	-7.56	5.86E-05	0.0439	ERO1A	endoplasmic reticulum oxidoreductase alpha
+201694_s_at	9.91	11.75	-3.59	6.97E-05	0.0442	EGR1	early growth response 1
+201702_s_at	9.18	7.04	4.42	7.58E-05	0.0442	PPP1R10	protein phosphatase 1, regulatory subunit 10
+202557_at	7.88	9.59	-3.28	7.86E-05	0.0442	HSPA13	heat shock protein 70kDa family, member 13
+202672_s_at	7.14	10.33	-9.16	6.84E-05	0.0442	ATF3	activating transcription factor 3
+211993_at	8.52	6.81	3.29	7.83E-05	0.0442	WNK1	WNK lysine deficient protein kinase 1
+212105_s_at	6.67	4.87	3.48	7.86E-05	0.0442	DHX9	DEAH (Asp-Glu-Ala-His) box helicase 9
+212366_at	6.67	8.62	-3.86	7.61E-05	0.0442	ZNF292	zinc finger protein 292
+213926_s_at	7.85	6.04	3.52	6.83E-05	0.0442	AGFG1	ArfGAP with FG repeats 1
+215446_s_at	3.76	9.1	-40.45	6.48E-05	0.0442	LOX	lysyl oxidase
+222316_at	5.23	7.22	-3.96	7.68E-05	0.0442		
+36711_at	7.9	10.58	-6.42	6.69E-05	0.0442	MAFF	v-maf avian musculoaponeurotic fibrosarcoma oncogene homolog F
+59625_at	8.32	10.12	-3.49	6.97E-05	0.0442	NOL3	nucleolar protein 3 (apoptosis repressor with CARD domain)
+225090_at	7.8	9.83	-4.08	6.83E-05	0.0442	SYVN1	synovial apoptosis inhibitor 1, synoviolin
+225557_at	8.2	10.01	-3.51	6.78E-05	0.0442	CSRNP1	cysteine-serine-rich nuclear protein 1
+226275_at	9.08	11.12	-4.12	6.65E-05	0.0442	MXD1	MAX dimerization protein 1
+228038_at	8.21	6.43	3.43	7.63E-05	0.0442	SOX2	SRY box 2
+230746_s_at	7.81	9.67	-3.63	6.15E-05	0.0442		
+232180_at	5.79	7.55	-3.38	6.86E-05	0.0442	UGP2	UDP-glucose pyrophosphorylase 2
+236620_at	8.65	6.91	3.34	7.23E-05	0.0442	RIF1	replication timing regulatory factor 1
+239710_at	7.38	5.46	3.79	7.21E-05	0.0442	FIGN	fidgetin
+242408_at	8.96	7.24	3.3	7.59E-05	0.0442	STYX	serine/threonine/tyrosine interacting protein
+244370_at	4.03	5.76	-3.31	7.43E-05	0.0442	KIAA2022	KIAA2022
+1553392_at	4.08	6	-3.77	6.27E-05	0.0442	EFCAB3; LOC102724660	EF-hand calcium binding domain 3; uncharacterized LOC102724660
+1557227_s_at	6.42	4.66	3.37	7.67E-05	0.0442	TPR	translocated promoter region, nuclear basket protein
+223046_at	9.4	11.19	-3.46	8.15E-05	0.0446	EGLN1	egl-9 family hypoxia-inducible factor 1
+228846_at	9.62	11.76	-4.41	8.02E-05	0.0446	MXD1	MAX dimerization protein 1
+230629_s_at	7.58	5.71	3.67	8.17E-05	0.0446	EP400	E1A binding protein p400
+202549_at	8.02	6.32	3.24	8.65E-05	0.0463	VAPB	VAMP (vesicle-associated membrane protein)-associated protein B and C
+206512_at	5.6	7.33	-3.31	8.60E-05	0.0463	SRP19; ZRSR1	signal recognition particle 19kDa; zinc finger (CCCH type), RNA binding motif and serine/arginine rich 1
+236480_at	5.32	7.38	-4.17	8.83E-05	0.0468	MIR210HG	MIR210 host gene
+214464_at	9.01	7.28	3.33	9.19E-05	0.0474	CDC42BPA	CDC42 binding protein kinase alpha (DMPK-like)
+218615_s_at	7.82	9.73	-3.76	9.05E-05	0.0474	TMEM39A	transmembrane protein 39A
+243296_at	6.21	7.86	-3.15	9.15E-05	0.0474	NAMPT	nicotinamide phosphoribosyltransferase
+244385_at	6.7	8.7	-4.02	9.35E-05	0.0477	KDM4C	lysine (K)-specific demethylase 4C
+211947_s_at	9.65	7.96	3.23	9.70E-05	0.0490	PRRC2C	proline-rich coiled-coil 2C
+217878_s_at	9.88	8.09	3.47	9.88E-05	0.0490	CDC27	cell division cycle 27
+222851_at	7.08	8.71	-3.1	9.90E-05	0.0490	ZNF654	zinc finger protein 654
+235461_at	7.01	5.02	3.98	9.96E-05	0.0490	TET2	tet methylcytosine dioxygenase 2
+227452_at	6.32	8	-3.22	0.0001	0.0491	LINC00511; LINC00673	long intergenic non-protein coding RNA 511; long intergenic non-protein coding RNA 673
+206500_s_at	7.08	4.89	4.57	0.0001	0.0492	MIS18BP1	MIS18 binding protein 1
+228483_s_at	6.22	8.41	-4.56	0.0001	0.0492	TAF9B	TAF9B RNA polymerase II, TATA box binding protein (TBP)-associated factor, 31kDa
