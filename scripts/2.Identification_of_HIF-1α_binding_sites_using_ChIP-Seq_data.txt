@@ -1,0 +1,151 @@
+###################################################################################################################################################################
+########################################################2.Identification of HIF-1α binding sites using ChIP-Seq data################################################
+###################################################################################################################################################################
+
+
+mkdir 2.Chip-seq_peak_calling
+cd 2.Chip-seq_peak_calling
+#For getting microarray probe coordinates (GRCh38) 
+R
+library('limma')
+library(affy)
+require(GEOquery)
+library(Biobase)
+library("biomaRt")
+ensembl=useMart("ensembl")
+ensembl = useEnsembl(biomart="ensembl", dataset="hsapiens_gene_ensembl")
+read.table(file="affy_list.txt",header=FALSE,as.is=TRUE)->J
+x=getBM(attributes = c('affy_hg_u133_plus_2','hgnc_symbol','chromosome_name','start_position','end_position','band'),filters = 'affy_hg_u133_plus_2',values = (J$V1),mart=ensembl)
+write.table(file="affy_hg_u133_plus_2.bed",x,col.names=TRUE,row.names=FALSE,sep="\t",quote=FALSE)
+q()
+n
+
+cp /home/erpl/Project/1.Diff_gene_exp_analysis/all_DRG_unique ../2.Chip-seq_peak_calling/
+
+#merging probe coordinate file with all DRG
+cut -f 1 all_DRG_unique > all_DRG_ID
+R
+a=read.table(file="affy_hg_u133_plus_2.bed",header=T,sep="\t",quote="")
+b=read.table(file="all_DRG_ID",header=T,sep="\t")
+c=merge(a,b,by.x="affy_hg_u133_plus_2",by.y="ID")
+write.table(c,file="probe_m_DRG",append=F,sep="\t",row.names=F,quote=F)
+q()
+n
+#removing scaffolds, rows without gene names
+grep -v "CHR" probe_m_DRG > probe_m_DRG_final
+grep -v "affy" probe_m_DRG_final|awk '{print $3,$4,$5,$1,$2}'|sed 's/ /\t/g'|sort -k1,1 -k2n,2>probe_m_DRG_final.bed
+grep -v "p" probe_m_DRG_final.bed|grep -v "q"|grep -v "GL000194">probe_m_DRG_final_1.bed
+
+
+#Bowtie buidling index
+cd /home/erpl/Bowtie_index 
+bowtie -build Homo_sapiens.GRCh38.dna_sm.toplevel.fa bowtie23.01.19
+
+#GSM700944_ChIPSeq_HIF1_alpha_sorted.txt and GSM700946_ChIPSeq_Pre_immune_Control_For_HIF1_HIF2_alpha_sorted.txt were downloaded from GEO id# GSE28352
+
+#Conversion of ChIP Seq files to FASTQ format
+cd /home/erpl/Project/2.Chip-seq_peak_calling/
+cut -f 9,10 GSM700944_ChIPSeq_HIF1_alpha_sorted.txt|awk '{print "@"NR"\n"$1"\n""+\n"$2}' > GSM700944_ChIPSeq_HIF1_alpha.fq
+cut -f 9,10 GSM700946_ChIPSeq_Pre_immune_Control_For_HIF1_HIF2_alpha_sorted.txt|awk '{print "@"NR"\n"$1"\n""+\n"$2}' > GSM700944_ChIPSeq_Pre_immune_Control_For_HIF1_HIF2_alpha.fq
+
+#Mapping with bowtie
+bowtie -S /home/erpl/Bowtie_index/bowtie23.01.19 GSM700944_ChIPSeq_HIF1_alpha.fq > mapping_bowtie_6.4.19.sam
+samtools sort -n mapping_bowtie_6.4.19.sam -o mapping_bowtie_sorted_6.4.19.sam
+bowtie -S /home/erpl/Bowtie_index/bowtie23.01.19 GSM700944_ChIPSeq_Pre_immune_Control_For_HIF1_HIF2_alpha.fq > mapping_bowtie_input_6.4.19.sam
+samtools sort -n mapping_bowtie_input_6.4.19.sam -o mapping_bowtie_input_sorted_6.4.19.sam
+
+#Peak Calling with MACS2
+mkdir macs2
+cd /home/erpl/Project/2.Chip-seq_peak_calling/macs2
+
+macs2 callpeak –t /home/erpl/Project/2.Chip-seq_peak_calling/mapping_bowtie_6.4.19.sam /home/erpl/Project/2.Chip-seq_peak_calling/mapping_bowtie_input_6.4.19.sam -f SAM -n 8.4.19_HIF1A_peaks --outdir /home/erpl/Project/2.Chip-seq_peak_calling/macs2
+grep -v "CHR" 8.4.19_HIF1A_peaks.narrowPeak>8.4.19_HIF1A_peaks_latest.narrowPeak
+
+#assigning nearest macs2 peak to each of the genes
+cp /home/erpl/Project/2.Chip-seq_peak_calling/probe_m_DRG_final_1.bed ../macs2/
+bedtools closest -a probe_m_DRG_final_1.bed -b 8.4.19_HIF1A_peaks_latest.narrowPeak -d>closest_bed_macs2
+awk '{print $1,$2,$3,$4,$5,$6,$7,$8,$16}' closest_bed_macs2|sed 's/ /\t/g'|sed '1i chr\tprobe_start\tprobe_end\tProbe_ID\tGene_name\tchr\tPeak_start\tPeak_end\tDist_from_probe_to_peak'>closest_bed_macs2_with_headers
+
+#TSS_all_genes.txt contains the transcription start sites (TSS) for all the differentially expressed genes downloaded from BioMart on Ensembl genome browser 96 (GRCh38.p12)
+awk '{print $3,$4,$5,$6}' TSS_all_genes.txt|sed 's/ /\t/g'>TSS_all_genes_latest.txt
+R
+a=read.table(file="closest_bed_macs2_with_headers",header=TRUE,sep="\t",quote="")
+b=read.table(file="TSS_all_genes_latest.txt",header=T,sep="\t")
+c=merge(a,b,by.x="Probe_ID",by.y="AFFY_HG_U133_Plus_2_probe")
+write.table(c,file="closest_bed_macs2_m_biomart_TSS",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+awk '{print $12,$13,$1,$8,$9,$11,$9-$11}' closest_bed_macs2_m_biomart_TSS|sed 's/ /\t/g'>distance_peaks_TSS_macs2
+#Finding genes that are located upstream or downstream 2 kb of the TSS
+awk '$8<=2000{print $0}' distance_peaks_TSS_macs2|awk '$8>0{print $0}'>final_genes_with_downstream_2kb_macs2
+sed -i '1i Gene_name\tTranscript_name\tProbe_ID\tchr\tPeak_start\tPeak_end\tTSS\tDist_from_TSS_to_peak' final_genes_with_downstream_2kb_macs2
+awk '$8>=-2000{print $0}' distance_peaks_TSS_macs2|awk '$8<0{print $0}'>final_genes_with_upstream_2kb_macs2
+sed -i '1i Gene_name\tTranscript_name\tProbe_ID\tchr\tPeak_start\tPeak_end\tTSS\tDist_from_TSS_to_peak' final_genes_with_upstream_2kb_macs2
+cat final_genes_with_downstream_2kb_macs2 final_genes_with_upstream_2kb_macs2|grep -v "Gene_name"|cut -f 1|sort|uniq>gene_names_2kb_macs2_uniq
+
+cd ..
+#Peak Calling with GEM
+
+mkdir GEM
+cd GEM
+
+#command used to perform peak calling with GEM
+#java -Xmx10G -jar gem.jar --d Read_Distribution_default.txt --expt mapping_bowtie_6.4.19.sam --ctrl mapping_bowtie_input_6.4.19.sam --f BED –outNP --out /home/erpl/Project/2.Chip-seq_peak_calling/GEM
+cd /home/erpl/Project/2.Chip-seq_peak_calling/GEM
+
+grep -v "CHR" GEM_HIF1A.GPS_events.narrowPeak|grep -v "chrK">GEM_HIF1A.GPS_events_latest.narrowPeak
+
+#assigning nearest GEM peak to each of the genes
+bedtools closest -a probe_m_DRG_final_1.bed -b GEM_HIF1A.GPS_events_latest.narrowPeak -d>closest_bed_GEM
+awk '{print $1,$2,$3,$4,$5,$7,$8,$16}' closest_bed_GEM|sed 's/ /\t/g'|sed '1i chr\tprobe_start\tprobe_end\tProbe_ID\tGene_name\tPeak_start\tPeak_end\tDist_from_probe_to_peak'>closest_bed_GEM_with_headers
+R
+a=read.table(file="closest_bed_GEM_with_headers",header=TRUE,sep="\t",quote="")
+b=read.table(file="TSS_all_genes_latest.txt",header=T,sep="\t")
+c=merge(a,b,by.x="Probe_ID",by.y="AFFY_HG_U133_Plus_2_probe")
+write.table(c,file="closest_bed_GEM_m_biomart_TSS",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+awk '{print $10,$11,$1,$2,$6,$7,$9,$7-$9}' closest_bed_GEM_m_biomart_TSS|sed 's/ /\t/g'>distance_peaks_TSS_GEM
+#Finding genes that are located upstream or downstream 2 kb of the TSS
+awk '$8<=2000{print $0}' distance_peaks_TSS_GEM|awk '$8>0{print $0}'>final_genes_with_downstream_2kb_GEM
+sed -i '1i Gene_name\tTranscript_name\tProbe_ID\tchr\tPeak_start\tPeak_end\tTSS\tDist_from_TSS_to_peak' final_genes_with_downstream_2kb_GEM
+awk '$8>=-2000{print $0}' distance_peaks_TSS_GEM|awk '$8<0{print $0}'>final_genes_with_upstream_2kb_GEM
+sed -i '1i Gene_name\tTranscript_name\tProbe_ID\tchr\tPeak_start\tPeak_end\tTSS\tDist_from_TSS_to_peak' final_genes_with_upstream_2kb_GEM
+cat final_genes_with_downstream_2kb_GEM final_genes_with_upstream_2kb_GEM|grep -v "Gene_name"|cut -f 1|sort|uniq>gene_names_2kb_GEM_uniq
+
+#File containing both upstream and downstream genes is final_genes_2kb_GEM stored in /home/erpl/Project/2.Chip-seq_peak_calling/GEM
+
+mkdir CCAT
+cd CCAT
+#Peak Calling with CCAT
+peakranger ccat –d mapping_bowtie_6.4.19.sam -c mapping_bowtie_input_6.4.19.sam --format SAM –o HIF1A_CCAT_12.4.19
+sort -k1,1 -k2,2n HIF1A_CCAT_12.4.19.bed>HIF1A_CCAT_12.4.19_sorted.bed
+
+#assigning nearest CCAT peak to each of the genes
+bedtools closest -a probe_m_DRG_final_1.bed -b HIF1A_CCAT_12.4.19_sorted.bed -d>closest_bed_CCAT
+awk '{print $1,$2,$3,$4,$5,$7,$8,$12}' closest_bed_CCAT|sed 's/ /\t/g'|sed '1i chr\tprobe_start\tprobe_end\tProbe_ID\tGene_name\tPeak_start\tPeak_end\tDist_from_probe_to_peak'>closest_bed_CCAT_with_headers
+R
+a=read.table(file="closest_bed_CCAT_with_headers",header=TRUE,sep="\t",quote="")
+b=read.table(file="TSS_all_genes_latest.txt",header=T,sep="\t")
+c=merge(a,b,by.x="Probe_ID",by.y="AFFY_HG_U133_Plus_2_probe")
+write.table(c,file="closest_bed_CCAT_m_biomart_TSS",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+awk '{print $10,$11,$1,$2,$6,$7,$9,$7-$9}' closest_bed_CCAT_m_biomart_TSS|sed 's/ /\t/g'>distance_peaks_TSS_CCAT
+
+#Finding genes that are located upstream or downstream 2 kb of the TSS
+awk '$8<=2000{print $0}' distance_peaks_TSS_CCAT|awk '$8>0{print $0}'>final_genes_with_downstream_2kb_CCAT
+sed -i '1i Gene_name\tTranscript_name\tProbe_ID\tchr\tPeak_start\tPeak_end\tTSS\tDist_from_TSS_to_peak' final_genes_with_downstream_2kb_CCAT
+awk '$8>=-2000{print $0}' distance_peaks_TSS_CCAT|awk '$8<0{print $0}'>final_genes_with_upstream_2kb_CCAT
+sed -i '1i Gene_name\tTranscript_name\tProbe_ID\tchr\tPeak_start\tPeak_end\tTSS\tDist_from_TSS_to_peak' final_genes_with_upstream_2kb_CCAT
+cat final_genes_with_downstream_2kb_CCAT final_genes_with_upstream_2kb_CCAT|grep -v "Gene_name"|cut -f 1|sort|uniq>gene_names_2kb_CCAT_uniq
+
+cd ..
+
+mkdir Fig2a
+cd Fig2a
+cp /home/erpl/Project/2.Chip-seq_peak_calling/macs2/gene_names_2kb_macs2_uniq ../Fig2a
+cp /home/erpl/Project/2.Chip-seq_peak_calling/GEM/gene_names_2kb_GEM_uniq ../Fig2a
+cp /home/erpl/Project/2.Chip-seq_peak_calling/CCAT/gene_names_2kb_CCAT_uniq ../Fig2a
+cp /home/erpl/Project/1.Diff_gene_exp_analysis/Upregulated_genes ../Fig2a
+#"gene_names_2kb_CCAT_uniq", "gene_names_2kb_macs2_uniq", "gene_names_2kb_GEM_uniq" and "Upregulated_genes" were used to make venn diagram on interactivenn.com, the genes which overlapped between these 4 files were downloaded and saved as custom_sig_before_cleanup3Jun.txt
