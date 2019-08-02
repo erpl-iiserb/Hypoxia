@@ -534,7 +534,7 @@ R
 unqlen <- function(temp_F) {
   length(unique(temp_F))
 }
-
+#steps to remove genes with single isoforms
 read.table(file="biomart_exons.bed",header=FALSE)->E
 aggregate(E$V5,list(E$V6),unqlen)->EU
 EU$Group.1[EU$x>1]->EUT
