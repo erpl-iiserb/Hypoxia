@@ -90,6 +90,10 @@ echo $gene $probesInGene $exonsinBed $paircount $2 >> Tests_done.txt
 done
 
 
+
+cat cors_folder/*.hyp_unique_exons.bed.Cor_out.txt > all.hyp_unique_exons.bed.Cor_out.txt
+
+
 #getCor.r script
 #!/usr/bin/env Rscript
 #args = commandArgs(trailingOnly=TRUE)
