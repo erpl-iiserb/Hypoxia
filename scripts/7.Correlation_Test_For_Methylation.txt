@@ -4,42 +4,35 @@
 
 cat HiSeqV2_exon|grep -v "Sample"|cut -f 1|awk '{print $0,$0}'|sed 's/:/\t/'|sed 's/-/\t/'|sed 's/:/\t/'|grep "chr"|sed 's/chr//'|sort -k1n,1 -k2n,2 > pre_subtract_exons.bed
 
-#for extracting transcripts that have at least 2 unique transcripts
-R
-unqlen <- function(temp_F) {
-  length(unique(temp_F))
-}
-
-read.table(file="biomart_exons.bed",header=FALSE)->E
-aggregate(E$V5,list(E$V6),unqlen)->EU
-EU$Group.1[EU$x>1]->EUT
-E[E$V6 %in% EUT,]->ET
-write.table(file="new_exons.bed",ET,quote=FALSE,row.names=FALSE,col.names=FALSE,sep="\t")
-q()
-n
-
-#for obtaining those genes which have at least one exon which is getting differentially spliced between the 2 transcripts 
-for gene in `cut -f 6 new_exons.bed|sort -u`
+for trans in `cat /home/erpl/Project/6.Diff_isoform_analysis/custom/dIF_C_genes_by_trans_list.tsv|awk '$2>0{print $0}'|cut -f 1`
 do
-count=1
-for trans in `grep "$gene" new_exons.bed|cut -f 5|sort -u`
-do
-echo $gene $trans
-grep "$trans" new_exons.bed > trans."$count".bed
-count=`echo $count|awk '{print $1+1}'`
+echo $trans
+grep "$trans" biomart_all_2Aug2019.txt > trans_exon.bed
+grep -v "$trans" biomart_all_2Aug2019.txt > not_trans_exon.bed
+bedtools subtract -A -a trans_exon.bed -b not_trans_exon.bed >> hyp_unique_to_trans.txt
 done
-tran1=`cat trans.1.bed|wc -l`
-tran2=`cat trans.2.bed|wc -l`
-if [ $tran1 -gt 1 ]
-then
-if [ $tran2 -gt 1 ]
-then
-bedtools subtract -A -a trans.1.bed -b trans.2.bed >> subtracted_regions.bed
-bedtools subtract -A -a trans.2.bed -b trans.1.bed >> subtracted_regions.bed
-fi
-fi
+for trans in `cat /home/erpl/Project/6.Diff_isoform_analysis/custom/dIF_C_genes_by_trans_list.tsv|awk '$2<0{print $0}'|cut -f 1`
+do
+grep "$trans" biomart_all_2Aug2019.txt > trans_exon.bed
+grep -v "$trans" biomart_all_2Aug2019.txt > not_trans_exon.bed
+bedtools subtract -A -a trans_exon.bed -b not_trans_exon.bed >> norm_unique_to_trans.txt
 done
 
+
+for trans in `cat /home/erpl/Project/6.Diff_isoform_analysis/msigdb/sorted.dIF_C_genes_list_IF.txt|awk '$2>0{print $0}'|cut -f 1`
+do
+echo $trans
+grep "$trans" biomart_all_2Aug2019.txt > trans_exon.bed
+grep -v "$trans" biomart_all_2Aug2019.txt > not_trans_exon.bed
+bedtools subtract -A -a trans_exon.bed -b not_trans_exon.bed >> hyp_unique_to_trans.txt
+done
+for trans in `cat /home/erpl/Project/6.Diff_isoform_analysis/msigdb/sorted.dIF_C_genes_list_IF.txt|awk '$2<0{print $0}'|cut -f 1`
+do
+echo $trans
+grep "$trans" biomart_all_2Aug2019.txt > trans_exon.bed
+grep -v "$trans" biomart_all_2Aug2019.txt > not_trans_exon.bed
+bedtools subtract -A -a trans_exon.bed -b not_trans_exon.bed >> norm_unique_to_trans.txt
+done
 
 bedtools intersect -f 1 -F 1 -a pre_subtract_exons.bed -b subtracted_regions.bed -wa|sort -u > exons.bed
 
