@@ -1,0 +1,235 @@
+##New exon analysis 9.8.19
+cp /home/erpl/Project/Survival_analysis/BRCA_survival_data_withHeader ../New_analysis_exon_9.8.19/
+cp /home/erpl/Project/Survival_analysis/exon_survival/HiSeqV2_exon_brca ../New_analysis_exon_9.8.19/
+cp /home/erpl/Project/Survival_analysis/exon_survival/pval.r ../New_analysis_exon_9.8.19/
+cp /home/erpl/Project/Survival_analysis/exon_survival/surv.r ../New_analysis_exon_9.8.19/
+
+##For hypoxia specific exons
+awk '$2<0.05{print $0}' hyp0.99_cors.txt|awk '$4<0.05{print $0}'>hyp0.99_cors_sig
+awk '{if(($1>0.1)&&($3>0.1))print}' hyp0.99_cors_sig>hyp0.99_cors_sig_pos
+awk '{if(($1<-0.1)&&($3<-0.1))print}' hyp0.99_cors_sig>hyp0.99_cors_sig_neg
+cat hyp0.99_cors_sig_pos hyp0.99_cors_sig_neg>hyp0.99_cors_sig_all
+
+cut -f 5 hyp0.99_cors_sig_all>significant_exons_hyp
+
+for i in `cat significant_exons_hyp`
+do
+grep "$i" HiSeqV2_exon_brca>HiSeqV2_exon_brca_exp
+head -1 HiSeqV2_exon_brca>datafile1
+cat datafile1 HiSeqV2_exon_brca_exp>HiSeqV2_exon_brca_exp_header
+datamash transpose < HiSeqV2_exon_brca_exp_header>HiSeqV2_exon_brca_exp_header_trans
+sort -k 2 -r -g HiSeqV2_exon_brca_exp_header_trans|grep -v "Sample"|cut -f 1|sed '277,828d'>top_bottom_25_exon
+head -276 top_bottom_25_exon>hypoxia_exon_25
+tail -276 top_bottom_25_exon>normoxia_exon_25
+awk '{$(NF+1)=1;}1' hypoxia_exon_25 > hypoxia_exon_25_1
+awk '{$(NF+1)=2;}1' normoxia_exon_25 >normoxia_exon_25_2
+cat hypoxia_exon_25_1 normoxia_exon_25_2 > combined_clusters_exon_25
+sed -i 's/ /\t/g' combined_clusters_exon_25
+Rscript surv.r
+cut -f 4,5,14,16,17,35 exon_BRCA_survival_25 |sed 's/NA/0/g'|sed 's/Alive/1/g'|sed 's/Dead/2/'|sed 's/FEMALE/2/g'|sed 's/MALE/1/g'|awk '{print $1,$2,$3,$4+$5,$6}'|sed 's/ /\t/g'| sed '1s/0/time_alive_or_dead/g'|sed 's/V2/Condition/'>surv_table_exon_survival
+Rscript pval.r $i
+done
+
+##for normoxia specific exons
+awk '$2<0.05{print $0}' norm0.99_cors.txt|awk '$4<0.05{print $0}'>norm0.99_cors_sig
+awk '{if(($1>0.1)&&($3>0.1))print}' norm0.99_cors_sig>norm0.99_cors_sig_pos
+awk '{if(($1<-0.1)&&($3<-0.1))print}' norm0.99_cors_sig>norm0.99_cors_sig_neg
+cat norm0.99_cors_sig_pos norm0.99_cors_sig_neg>norm0.99_cors_sig_all
+cut -f 5 norm0.99_cors_sig_all>significant_exons_norm
+
+
+#surv.r script
+#!/usr/bin/env Rscript
+a=read.table(file="BRCA_survival_data_withHeader",header=T,sep="\t")
+b=read.table(file="combined_clusters_exon_25",header=F,sep="\t")
+c=merge(a,b,by.x="sample",by.y="V1")
+write.table(c,file="exon_BRCA_survival_25",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+
+
+#pval.r script
+#!/usr/bin/env Rscript
+args = commandArgs(trailingOnly=TRUE)
+a=read.table(file="surv_table_exon_survival",header=T,sep="\t")
+library(survival)
+library(survminer)
+sfit_km <- survfit(Surv(time_alive_or_dead, vital_status)~Condition, data=a,type="kaplan-meier")
+surv_pvalue(sfit_km)->pv_km
+(pv_km$pval)->pc_km
+sfit_fh <- survfit(Surv(time_alive_or_dead, vital_status)~Condition, data=a,type="fleming-harrington")
+surv_pvalue(sfit_fh)->pv_fh
+(pv_fh$pval)->pc_fh
+data.frame(args[1],pc_km,pc_fh,stringsAsFactors = FALSE)->pvp
+write.table(pvp,file="exon_survival_pvalue_hyp",sep="\t",append=T,row.names=F,quote=F,col.names=F)
+
+
+for i in `cat significant_exons_norm`
+do
+grep "$i" HiSeqV2_exon_brca>HiSeqV2_exon_brca_exp
+head -1 HiSeqV2_exon_brca>datafile1
+cat datafile1 HiSeqV2_exon_brca_exp>HiSeqV2_exon_brca_exp_header
+datamash transpose < HiSeqV2_exon_brca_exp_header>HiSeqV2_exon_brca_exp_header_trans
+sort -k 2 -r -g HiSeqV2_exon_brca_exp_header_trans|grep -v "Sample"|cut -f 1|sed '277,828d'>top_bottom_25_exon
+head -276 top_bottom_25_exon>normoxia_exon_25
+tail -276 top_bottom_25_exon>hypoxia_exon_25
+awk '{$(NF+1)=1;}1' hypoxia_exon_25 > hypoxia_exon_25_1
+awk '{$(NF+1)=2;}1' normoxia_exon_25 >normoxia_exon_25_2
+cat hypoxia_exon_25_1 normoxia_exon_25_2 > combined_clusters_exon_25
+sed -i 's/ /\t/g' combined_clusters_exon_25
+Rscript surv.r
+cut -f 4,5,14,16,17,35 exon_BRCA_survival_25 |sed 's/NA/0/g'|sed 's/Alive/1/g'|sed 's/Dead/2/'|sed 's/FEMALE/2/g'|sed 's/MALE/1/g'|awk '{print $1,$2,$3,$4+$5,$6}'|sed 's/ /\t/g'| sed '1s/0/time_alive_or_dead/g'|sed 's/V2/Condition/'>surv_table_exon_survival
+Rscript pval.r $i
+done
+
+R
+read.table(file="hyp0.99_cors_sig_all",sep="\t",header=F)->C
+p.adjust(C$V2)->C$FDR1
+p.adjust(C$V4)->C$FDR2
+write.table(C,file="hyp0.99_cors_fdr_corrected",sep="\t",row.names=F,quote=F)
+q()
+n
+awk '$9<0.01{print $0}' hyp0.99_cors_fdr_corrected|awk '$8<0.01{print $0}'>hyp99_cors_fdr_corrected_sig
+R
+C=read.table("hyp99_cors_fdr_corrected_sig",sep="\t",header=F)
+read.table(file="exon_survival_pvalue_hyp",header=F)->M
+M[M$V1 %in% C$V5,]->N
+p.adjust(N$V2)->N$FDR
+write.table(N,file="exon_survival_pvalue_hyp_fdr_corrected",sep="\t",row.names=F,quote=F)
+q()
+n
+
+R
+read.table(file="norm0.99_cors_sig_all",sep="\t",header=F)->C
+p.adjust(C$V2)->C$FDR1
+p.adjust(C$V4)->C$FDR2
+write.table(C,file="norm0.99_cors_fdr_corrected",sep="\t",row.names=F,quote=F)
+q()
+n
+awk '$9<0.01{print $0}' norm0.99_cors_fdr_corrected|awk '$8<0.01{print $0}'>norm0.99_cors_fdr_corrected_sig
+R
+C=read.table("norm0.99_cors_fdr_corrected_sig",sep="\t",header=F)
+read.table(file="exon_survival_pvalue_norm",header=F)->M
+M[M$V1 %in% C$V5,]->N
+p.adjust(N$V2)->N$FDR
+write.table(N,file="exon_survival_pvalue_norm_fdr_corrected",sep="\t",row.names=F,quote=F)
+q()
+n
+
+
+
+#####Boxplot for BICD2
+cd /home/erpl/Project/6.Diff_isoform_analysis/msigdb
+R
+read.table(file="IF_Hyp",header=FALSE)->H
+read.table(file="IF_Norm",header=FALSE)->N
+I1<-"ENST00000356884"
+I2<-"ENST00000375512"
+
+H[H$V1==I1,]->HI1
+H[H$V1==I2,]->HI2
+
+N[N$V1==I1,]->NI1
+N[N$V1==I2,]->NI2
+
+data.frame(Factor=c(rep("B_HI1",length(HI1)-1),rep("D_HI2",length(HI2)-1),rep("A_NI1",length(NI1)-1),rep("C_NI2",length(NI2)-1)),Expr=c(as.numeric(HI1[1,2:111]),as.numeric(HI2[1,2:111]),as.numeric(NI1[1,2:111]),as.numeric(NI2[1,2:111])))->B
+
+boxplot(B$Expr~B$Factor,noth=TRUE,col=c("red","blue","red","blue"),ylab="Percent Isoform Usage",names=c("Normoxia","Hypoxia","Normoxia","Hypoxia"))
+
+##survival curve for exon of BICD2
+mkdir BICD2
+cd BICD2
+cp /home/erpl/Project/Survival_analysis/BRCA_survival_data_withHeader ../BICD2/
+cp /home/erpl/Project/Survival_analysis/exon_survival/HiSeqV2_exon_brca ../BICD2/
+
+grep "chr9:95473645-95477745:-" HiSeqV2_exon_brca>HiSeqV2_exon_brca_bicd2_exon
+
+head -1 HiSeqV2_exon_brca>datafile1
+cat datafile1 HiSeqV2_exon_brca_bicd2_exon>HiSeqV2_exon_brca_bicd2_exon_header
+
+datamash transpose < HiSeqV2_exon_brca_bicd2_exon_header>HiSeqV2_exon_brca_bicd2_exon_header_trans
+sort -k 2 -r -g HiSeqV2_exon_brca_bicd2_exon_header_trans|grep -v "Sample"|cut -f 1|sed '277,828d'>top_bottom_25_bicd2_exon
+head -276 top_bottom_25_bicd2_exon>normoxia_bicd2_exon_25
+tail -276 top_bottom_25_bicd2_exon>hypoxia_bicd2_exon_25
+
+awk '{$(NF+1)=2;}1' hypoxia_bicd2_exon_25 > hypoxia_bicd2_exon_25_1
+awk '{$(NF+1)=1;}1' normoxia_bicd2_exon_25 >normoxia_bicd2_exon_25_2
+cat hypoxia_bicd2_exon_25_1 normoxia_bicd2_exon_25_2 > combined_clusters_bicd2_exon_25
+sed -i 's/ /\t/g' combined_clusters_bicd2_exon_25
+R
+a=read.table(file="BRCA_survival_data_withHeader",header=T,sep="\t")
+b=read.table(file="combined_clusters_bicd2_exon_25",header=F,sep="\t")
+c=merge(a,b,by.x="sample",by.y="V1")
+write.table(c,file="bicd2_exon_BRCA_survival_25",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+cut -f 4,5,14,16,17,35 bicd2_exon_BRCA_survival_25 |sed 's/NA/0/g'|sed 's/Alive/1/g'|sed 's/Dead/2/'|sed 's/FEMALE/2/g'|sed 's/MALE/1/g'|awk '{print $1,$2,$3,$4+$5,$6}'|sed 's/ /\t/g'| sed '1s/0/time_alive_or_dead/g'|sed 's/V2/Condition/'>surv_table_bicd2_exon_25
+R
+a=read.table(file="surv_table_bicd2_exon_25",header=T,sep="\t")
+library(survival)
+library(survminer)
+sfit <- survfit(Surv(time_alive_or_dead, vital_status)~Condition, data=a)
+
+tiff("surv_plot_BICD2.tiff",units="in",height=8,width=8,res=300)
+ggsurvplot(sfit, conf.int=TRUE, pval=TRUE, risk.table=FALSE, legend.labs=c("Hypoxia", "Normoxia"), legend.title="Condition",palette=c("blue", "red"), 
+title="Kaplan Plot for exon ENSE00001404188 of BICD2 in Breast Cancer")
+dev.off()
+
+#BICD2 -0.282863815385105	6.57547389684859e-16	-0.179006157028737	6.0989575278019e-14	chr9:95473645-95477745:-	cg04269907	9_95473645_95527094_ENSG00000185963
+#DHX32 0.193063088449734	4.98161075647034e-08	0.144176319871387	1.48800462261481e-09	chr10:127542530-127543428:-	cg24383528	10_127524906_127585005_ENSG00000089876
+
+##Boxplot for DHX32
+cd /home/erpl/Project/6.Diff_isoform_analysis/custom
+R
+read.table(file="IF_HypC",header=FALSE)->H
+read.table(file="IF_NormC",header=FALSE)->N
+I1<-"ENST00000284690"
+I2<-"ENST00000368721"
+
+H[H$V1==I1,]->HI1
+H[H$V1==I2,]->HI2
+
+N[N$V1==I1,]->NI1
+N[N$V1==I2,]->NI2
+
+data.frame(Factor=c(rep("B_HI1",length(HI1)-1),rep("D_HI2",length(HI2)-1),rep("A_NI1",length(NI1)-1),rep("C_NI2",length(NI2)-1)),Expr=c(as.numeric(HI1[1,2:111]),as.numeric(HI2[1,2:111]),as.numeric(NI1[1,2:111]),as.numeric(NI2[1,2:111])))->B
+
+boxplot(B$Expr~B$Factor,noth=TRUE,col=c("red","blue","red","blue"),ylab="Percent Isoform Usage",names=c("Normoxia","Hypoxia","Normoxia","Hypoxia"))
+
+##Survival plot for DHX32
+mkdir DHX32
+cd DHX32
+cp /home/erpl/Project/Survival_analysis/BRCA_survival_data_withHeader ../DHX32/
+cp /home/erpl/Project/Survival_analysis/exon_survival/HiSeqV2_exon_brca ../DHX32/
+
+grep "chr10:127542530-127543428:-" HiSeqV2_exon_brca>HiSeqV2_exon_brca_dhx32_exon
+
+head -1 HiSeqV2_exon_brca>datafile1
+cat datafile1 HiSeqV2_exon_brca_dhx32_exon>HiSeqV2_exon_brca_dhx32_exon_header
+
+datamash transpose < HiSeqV2_exon_brca_dhx32_exon_header>HiSeqV2_exon_brca_dhx32_exon_header_trans
+sort -k 2 -r -g HiSeqV2_exon_brca_dhx32_exon_header_trans|grep -v "Sample"|cut -f 1|sed '277,828d'>top_bottom_25_dhx32_exon
+head -276 top_bottom_25_dhx32_exon>normoxia_dhx32_exon_25
+tail -276 top_bottom_25_dhx32_exon>hypoxia_dhx32_exon_25
+
+awk '{$(NF+1)=2;}1' hypoxia_dhx32_exon_25 > hypoxia_dhx32_exon_25_1
+awk '{$(NF+1)=1;}1' normoxia_dhx32_exon_25 >normoxia_dhx32_exon_25_2
+cat hypoxia_dhx32_exon_25_1 normoxia_dhx32_exon_25_2 > combined_clusters_dhx32_exon_25
+sed -i 's/ /\t/g' combined_clusters_dhx32_exon_25
+R
+a=read.table(file="BRCA_survival_data_withHeader",header=T,sep="\t")
+b=read.table(file="combined_clusters_dhx32_exon_25",header=F,sep="\t")
+c=merge(a,b,by.x="sample",by.y="V1")
+write.table(c,file="dhx32_exon_BRCA_survival_25",sep="\t",append=F,row.names=F,quote=F)
+q()
+n
+cut -f 4,5,14,16,17,35 dhx32_exon_BRCA_survival_25 |sed 's/NA/0/g'|sed 's/Alive/1/g'|sed 's/Dead/2/'|sed 's/FEMALE/2/g'|sed 's/MALE/1/g'|awk '{print $1,$2,$3,$4+$5,$6}'|sed 's/ /\t/g'| sed '1s/0/time_alive_or_dead/g'|sed 's/V2/Condition/'>surv_table_dhx32_exon_25
+R
+a=read.table(file="surv_table_dhx32_exon_25",header=T,sep="\t")
+library(survival)
+library(survminer)
+sfit <- survfit(Surv(time_alive_or_dead, vital_status)~Condition, data=a)
+
+tiff("surv_plot_DHX32.tiff",units="in",height=8,width=8,res=300)
+ggsurvplot(sfit, conf.int=TRUE, pval=TRUE, risk.table=FALSE, legend.labs=c("Hypoxia", "Normoxia"), legend.title="Condition",palette=c("blue", "red"),title="Kaplan Plot for exon ENSE00001447872 of DHX32 in Breast Cancer")
+dev.off()
