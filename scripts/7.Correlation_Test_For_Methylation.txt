@@ -37,7 +37,7 @@ done
 bedtools intersect -f 1 -F 1 -a pre_subtract_exons.bed -b hyp_unique_to_trans.txt -wa|sort -u > hyp_unique_exons.bed
 bedtools intersect -f 1 -F 1 -a pre_subtract_exons.bed -b norm_unique_to_trans.txt -wa|sort -u > norm_unique_exons.bed
 
-for i in `ls -1 dIF_C.*|head -1`
+for i in `ls -1 dIF_C.*`
 do
 ./getCors.sh $i hyp_unique_exons.bed
 done
@@ -52,7 +52,7 @@ bedtools intersect -f 1 -F 1 -a pre_subtract_exons.bed -b norm_unique_to_trans.t
 grep -v "Gene" diff_spliced_genes_msigdb.txt|awk '{print $4,$2,$3,$1}'|sed 's/ /\t/g'>diff_spliced_genes_msigdb.bed
 split -l 50 diff_spliced_genes_msigdb.bed dIF_msigdb.*
 
-for i in `ls -1 dIF_msigdb.*|head -1`
+for i in `ls -1 dIF_msigdb.*`
 do
 ./getCors.sh $i hyp_unique_exons.bed
 done
